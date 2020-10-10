@@ -1,2 +1,9 @@
 .vscode
+src
 tests
+.eslintrc
+.gitignore
+.prettierrc
+.travis.yml
+jest.config.js
+tsconfig.json
