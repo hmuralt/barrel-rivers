@@ -1,0 +1,54 @@
+{
+  "name": "sdreamed-state",
+  "version": "1.0.0",
+  "description": "RxJS based state management",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:hmuralt/sdreamed-state.git"
+  },
+  "keywords": [
+    "rxjs",
+    "state",
+    "state management",
+    "typescript"
+  ],
+  "author": "Heinrich Muralt",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hmuralt/sdreamed-state"
+  },
+  "homepage": "https://github.com/hmuralt/sdreamed-state",
+  "scripts": {
+    "clean": "rimraf dist",
+    "lint": "eslint --ext=ts,tsx src",
+    "build": "yarn clean && yarn lint && tsc",
+    "tdd": "jest --env=node --watch",
+    "test": "jest --env=node"
+  },
+  "peerDependencies": {
+    "rxjs": "^6.5.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.23",
+    "@typescript-eslint/eslint-plugin": "^4.4.0",
+    "@typescript-eslint/parser": "^4.4.0",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.7.1",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-flowtype": "^4.5.2",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.1",
+    "jest": "^24.5.0",
+    "prettier": "^1.19.1",
+    "rimraf": "^3.0.0",
+    "rxjs": "^6.5.5",
+    "ts-jest": "^24.0.0",
+    "typescript": "^4.0.3"
+  },
+  "dependencies": {
+    "lodash.clone": "^4.5.0",
+    "lodash.eq": "^4.0.0"
+  }
+}
