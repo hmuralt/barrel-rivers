@@ -1,12 +1,25 @@
 {
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
-  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:prettier/recommended"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:jest/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
   "rules": {
     "no-console": "error",
     "no-unused-expressions": "error",
     "@typescript-eslint/no-explicit-any": "error",
     "@typescript-eslint/ban-types": "off"
   },
-  "env": { "es6": true }
+  "overrides": [
+    {
+      "files": ["tests/*Test.ts"],
+      "rules": {
+        "@typescript-eslint/explicit-function-return-type": "off"
+      }
+    }
+  ],
+  "env": { "es6": true, "browser": true, "jest/globals": true }
 }
