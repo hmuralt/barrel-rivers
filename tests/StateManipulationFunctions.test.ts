@@ -65,15 +65,6 @@ describe("set", () => {
     expect(result).not.toBe(testObject);
   });
 
-  it("returns a function that clones an objects when updated", () => {
-    const newValue = 2323;
-    const testee = set<TestObject, number>((state) => state.prop1, newValue);
-
-    const result = testee(testObject);
-
-    expect(result).not.toBe(testObject);
-  });
-
   describe("updating sub objects", () => {
     it("returns a function to update a sub objects property value by passing a new value", () => {
       const newValue = 1555;
