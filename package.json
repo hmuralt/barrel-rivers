@@ -1,11 +1,11 @@
 {
-  "name": "sdreamed-state",
+  "name": "streamed-state",
   "version": "1.0.0",
   "description": "RxJS based state management",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git@github.com:hmuralt/sdreamed-state.git"
+    "url": "git@github.com:hmuralt/streamed-state.git"
   },
   "keywords": [
     "rxjs",
@@ -16,9 +16,9 @@
   "author": "Heinrich Muralt",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hmuralt/sdreamed-state"
+    "url": "https://github.com/hmuralt/streamed-state"
   },
-  "homepage": "https://github.com/hmuralt/sdreamed-state",
+  "homepage": "https://github.com/hmuralt/streamed-state",
   "scripts": {
     "clean": "rimraf dist",
     "lint": "eslint --ext=ts,tsx src",
