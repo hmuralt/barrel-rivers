@@ -1,11 +1,11 @@
 {
-  "name": "streamed-state",
+  "name": "barrel-rivers",
   "version": "1.0.0",
   "description": "RxJS based state management",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git@github.com:hmuralt/streamed-state.git"
+    "url": "git@github.com:hmuralt/barrel-rivers.git"
   },
   "keywords": [
     "rxjs",
@@ -16,9 +16,9 @@
   "author": "Heinrich Muralt",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hmuralt/streamed-state"
+    "url": "https://github.com/hmuralt/barrel-rivers"
   },
-  "homepage": "https://github.com/hmuralt/streamed-state",
+  "homepage": "https://github.com/hmuralt/barrel-rivers",
   "scripts": {
     "clean": "rimraf dist",
     "lint": "eslint --ext=ts,tsx src",
