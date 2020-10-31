@@ -1,36 +1,36 @@
 import { skip } from "rxjs/operators";
-import StateHandler, { RecursivePartial, createStateHandler } from "../src/StateHandler";
+import State, { RecursivePartial, state } from "../src/State";
 
-const testState = {
+const testValue = {
   firstProperty: "some test value",
   secondProperty: 42,
   thirdProperty: [{ value: 1 }, { value: 2 }, { value: 3 }]
 };
 
-type TestState = typeof testState;
+type TestValue = typeof testValue;
 
-describe("StateHandler", () => {
-  let testee: StateHandler<TestState>;
+describe("State", () => {
+  let testee: State<TestValue>;
 
   beforeEach(() => {
-    testee = createStateHandler(testState);
+    testee = state(testValue);
   });
 
-  describe("setState", () => {
+  describe("set", () => {
     it("takes a partial state object and merges the current state with the values from passed partial state", () => {
       // Arrange
-      const testPartialState: RecursivePartial<TestState> = {
+      const testPartialState: RecursivePartial<TestValue> = {
         secondProperty: 2123
       };
 
       // Act
-      testee.setState(testPartialState);
+      testee.set(testPartialState);
 
       // Assert
-      expect(testee.state).toEqual({
-        firstProperty: testState.firstProperty,
+      expect(testee.value).toEqual({
+        firstProperty: testValue.firstProperty,
         secondProperty: testPartialState.secondProperty,
-        thirdProperty: testState.thirdProperty
+        thirdProperty: testValue.thirdProperty
       });
     });
 
@@ -39,15 +39,15 @@ describe("StateHandler", () => {
       const updateState = jest.fn((state) => state);
 
       // Act
-      testee.setState(updateState);
+      testee.set(updateState);
 
       // Assert
-      expect(updateState).toHaveBeenCalledWith(testee.state);
+      expect(updateState).toHaveBeenCalledWith(testee.value);
     });
 
     it("takes a function and replaces the current state with state return by passed function", () => {
       // Arrange
-      const newTestState: TestState = {
+      const newTestState: TestValue = {
         firstProperty: "something new",
         secondProperty: 696,
         thirdProperty: []
@@ -55,47 +55,47 @@ describe("StateHandler", () => {
       const updateState = jest.fn(() => newTestState);
 
       // Act
-      testee.setState(updateState);
+      testee.set(updateState);
 
       // Assert
-      expect(testee.state).toBe(newTestState);
+      expect(testee.value).toBe(newTestState);
     });
 
     it("replaces primitive values", () => {
       // Arrange
-      const primitiveTestee = createStateHandler(0);
+      const primitiveTestee = state(0);
       const testValue = 10;
 
       // Act
-      primitiveTestee.setState(testValue);
+      primitiveTestee.set(testValue);
 
       // Assert
-      expect(primitiveTestee.state).toBe(testValue);
+      expect(primitiveTestee.value).toBe(testValue);
     });
 
     it("results in emitting primitive values", () => {
       expect.assertions(1);
 
       // Arrange
-      const primitiveTestee = createStateHandler(0);
+      const primitiveTestee = state(0);
       const testValue = -10;
 
-      primitiveTestee.state$.pipe(skip(1)).subscribe((value) => {
+      primitiveTestee.value$.pipe(skip(1)).subscribe((value) => {
         // Assert
         expect(value).toBe(testValue);
       });
 
       // Act
-      primitiveTestee.setState(testValue);
+      primitiveTestee.set(testValue);
     });
 
     it("does a shallow merge", () => {
       // Arrange
       // Act
-      testee.setState({ thirdProperty: [] });
+      testee.set({ thirdProperty: [] });
 
       // Assert
-      expect(testee.state.thirdProperty.length).toBe(0);
+      expect(testee.value.thirdProperty.length).toBe(0);
     });
   });
 });

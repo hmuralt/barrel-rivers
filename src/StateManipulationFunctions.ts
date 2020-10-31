@@ -1,26 +1,26 @@
 import clone from "lodash.clone";
 import eq from "lodash.eq";
 
-export type PropertySelector<TState, TPropertyValue> = (state: TState) => TPropertyValue;
-export type NewValueGetter<TValue> = (currentValue: TValue) => TValue;
-
 interface GetCall {
   target: {};
   key: PropertyKey;
 }
 
-export function set<TState extends {}, TPropertyValue>(
-  propertySelector: PropertySelector<TState, TPropertyValue>,
+export type PropertySelector<TObject, TPropertyValue> = (obj: TObject) => TPropertyValue;
+export type NewValueGetter<TValue> = (currentValue: TValue) => TValue;
+
+export function update<TObject extends {}, TPropertyValue>(
+  propertySelector: PropertySelector<TObject, TPropertyValue>,
   newValue: TPropertyValue | NewValueGetter<TPropertyValue>
 ) {
-  return (currentState: TState): TState => {
+  return (currentObject: TObject): TObject => {
     const getCalls: GetCall[] = [];
-    const proxiedState = getProxiedObject(currentState, (getCall) => getCalls.push(getCall));
-    propertySelector(proxiedState);
+    const proxiedObject = getProxiedObject(currentObject, (getCall) => getCalls.push(getCall));
+    propertySelector(proxiedObject);
 
-    const value = isNewValueGetter(newValue) ? newValue(propertySelector(currentState)) : newValue;
+    const value = isNewValueGetter(newValue) ? newValue(propertySelector(currentObject)) : newValue;
 
-    return updateObject<TState, TPropertyValue>(getCalls, value);
+    return updateObject<TObject, TPropertyValue>(getCalls, value);
   };
 }
 

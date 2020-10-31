@@ -1,6 +1,12 @@
-import { set, addArrayItem, addOrUpdateArrayItem, withEqual, removeArrayItem } from "../src/StateManipulationFunctions";
+import {
+  update,
+  addArrayItem,
+  addOrUpdateArrayItem,
+  withEqual,
+  removeArrayItem
+} from "../src/StateManipulationFunctions";
 
-describe("set", () => {
+describe("update", () => {
   const testObject = {
     prop1: 1,
     prop2: "some string value",
@@ -14,7 +20,7 @@ describe("set", () => {
 
   it("returns a function to update an objects property value by passing a new value", () => {
     const newValue = 2323;
-    const testee = set<TestObject, number>((state) => state.prop1, newValue);
+    const testee = update<TestObject, number>((state) => state.prop1, newValue);
 
     const result = testee(testObject);
 
@@ -23,7 +29,7 @@ describe("set", () => {
 
   it("returns a function to update an objects array property value by passing a new array getter callback", () => {
     const newValue = 2323;
-    const testee = set<TestObject, number[]>(
+    const testee = update<TestObject, number[]>(
       (state) => state.prop3,
       (arrayToUpdate) => [...arrayToUpdate, newValue]
     );
@@ -36,7 +42,7 @@ describe("set", () => {
   });
 
   it("returns a function to update an objects property value by passing a new value getter callback", () => {
-    const testee = set<TestObject, number>(
+    const testee = update<TestObject, number>(
       (state) => state.prop1,
       (oldValue) => oldValue + 1
     );
@@ -48,7 +54,7 @@ describe("set", () => {
 
   it("returns a function to update only one property value of an object", () => {
     const newValue = "new string";
-    const testee = set<TestObject, string>((state) => state.prop2, newValue);
+    const testee = update<TestObject, string>((state) => state.prop2, newValue);
 
     const result = testee(testObject);
 
@@ -58,7 +64,7 @@ describe("set", () => {
 
   it("returns a function that clones an objects when updated", () => {
     const newValue = 2323;
-    const testee = set<TestObject, number>((state) => state.prop1, newValue);
+    const testee = update<TestObject, number>((state) => state.prop1, newValue);
 
     const result = testee(testObject);
 
@@ -68,7 +74,7 @@ describe("set", () => {
   describe("updating sub objects", () => {
     it("returns a function to update a sub objects property value by passing a new value", () => {
       const newValue = 1555;
-      const testee = set<TestObject, number>((state) => state.sub1.propSub11, newValue);
+      const testee = update<TestObject, number>((state) => state.sub1.propSub11, newValue);
 
       const result = testee(testObject);
 
@@ -77,7 +83,7 @@ describe("set", () => {
 
     it("returns a function that clones a sub objects when updated", () => {
       const newValue = 1555;
-      const testee = set<TestObject, number>((state) => state.sub1.propSub11, newValue);
+      const testee = update<TestObject, number>((state) => state.sub1.propSub11, newValue);
 
       const result = testee(testObject);
 
@@ -86,7 +92,7 @@ describe("set", () => {
 
     it("returns a function to update a sub objects array property value by passing index selector and a new value", () => {
       const newValue = 987;
-      const testee = set<TestObject, number>((state) => state.sub1.propSub12[0], newValue);
+      const testee = update<TestObject, number>((state) => state.sub1.propSub12[0], newValue);
 
       const result = testee(testObject);
 
@@ -95,7 +101,7 @@ describe("set", () => {
 
     it("returns a function that clones a sub objects array property when updated", () => {
       const newValue = 987;
-      const testee = set<TestObject, number>((state) => state.sub1.propSub12[0], newValue);
+      const testee = update<TestObject, number>((state) => state.sub1.propSub12[0], newValue);
 
       const result = testee(testObject);
 
