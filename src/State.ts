@@ -2,25 +2,32 @@ import { BehaviorSubject } from "rxjs";
 import ValueContainer from "./ValueContainer";
 
 export type NewValueGetter<TValue> = (currentValue: TValue) => TValue;
-export type Set<TValue> = (
-  newValue: TValue | NewValueGetter<TValue> | (TValue extends {} ? Partial<TValue> : never)
-) => void;
+export type NewValue<TValue> = TValue | NewValueGetter<TValue> | (TValue extends {} ? Partial<TValue> : never);
+export type UpdateValue<TValue> = (newValue: NewValue<TValue>) => TValue;
+export type Set<TValue> = (newValue: NewValue<TValue>) => void;
+export type SetExtension<TValue> = (next: UpdateValue<TValue>) => UpdateValue<TValue>;
 
-export function state<TValue>(initialValue: TValue): State<TValue> {
+export function state<TValue>(initialValue: TValue, ...setExtensions: SetExtension<TValue>[]): State<TValue> {
   const stateSubject = new BehaviorSubject(initialValue);
 
-  const set = (newValue: TValue | NewValueGetter<TValue>) => {
+  const applyNewValue = (newValue: NewValue<TValue>) => {
     if (isNewValueGetter(newValue)) {
-      stateSubject.next(newValue(stateSubject.value));
-      return;
+      return newValue(stateSubject.value);
     }
 
     if (typeof newValue === "object" && !Array.isArray(newValue)) {
-      stateSubject.next({ ...stateSubject.value, ...newValue });
-      return;
+      return { ...stateSubject.value, ...newValue };
     }
 
-    stateSubject.next(newValue);
+    return newValue as TValue;
+  };
+
+  const updateValue = setExtensions.reduceRight((next, setExtension) => {
+    return setExtension(next);
+  }, applyNewValue);
+
+  const set = (newValue: NewValue<TValue>) => {
+    stateSubject.next(updateValue(newValue));
   };
 
   return {
@@ -36,7 +43,7 @@ export default interface State<TValue> extends ValueContainer<TValue> {
   set: Set<TValue>;
 }
 
-function isNewValueGetter<TValue>(
+export function isNewValueGetter<TValue>(
   newValue: Partial<TValue> | NewValueGetter<TValue>
 ): newValue is NewValueGetter<TValue> {
   return typeof newValue === "function";
