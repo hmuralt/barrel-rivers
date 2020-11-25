@@ -1,5 +1,5 @@
 import { skip } from "rxjs/operators";
-import State, { RecursivePartial, state } from "../src/State";
+import State, { state } from "../src/State";
 
 const testValue = {
   firstProperty: "some test value",
@@ -19,7 +19,7 @@ describe("State", () => {
   describe("set", () => {
     it("takes a partial state object and merges the current state with the values from passed partial state", () => {
       // Arrange
-      const testPartialState: RecursivePartial<TestValue> = {
+      const testPartialState: Partial<TestValue> = {
         secondProperty: 2123
       };
 

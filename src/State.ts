@@ -1,8 +1,10 @@
 import { BehaviorSubject } from "rxjs";
 import ValueContainer from "./ValueContainer";
 
-export type RecursivePartial<T> = { [P in keyof T]?: RecursivePartial<T[P]> };
 export type NewValueGetter<TValue> = (currentValue: TValue) => TValue;
+export type Set<TValue> = (
+  newValue: TValue | NewValueGetter<TValue> | (TValue extends {} ? Partial<TValue> : never)
+) => void;
 
 export function state<TValue>(initialValue: TValue): State<TValue> {
   const stateSubject = new BehaviorSubject(initialValue);
@@ -31,11 +33,11 @@ export function state<TValue>(initialValue: TValue): State<TValue> {
 }
 
 export default interface State<TValue> extends ValueContainer<TValue> {
-  set(newValue: TValue | NewValueGetter<TValue> | (TValue extends {} ? RecursivePartial<TValue> : never)): void;
+  set: Set<TValue>;
 }
 
 function isNewValueGetter<TValue>(
-  newValue: RecursivePartial<TValue> | NewValueGetter<TValue>
+  newValue: Partial<TValue> | NewValueGetter<TValue>
 ): newValue is NewValueGetter<TValue> {
   return typeof newValue === "function";
 }
