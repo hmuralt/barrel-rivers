@@ -1,12 +1,15 @@
 export * from "./StateManipulationFunctions";
 export {
   default as State,
+  StateOptions,
   NewValueGetter,
   NewValue,
-  UpdateValue,
-  Set,
-  SetExtension,
+  ApplyValue as UpdateValue,
+  SetValue,
+  SetValueExtension,
   state,
-  isNewValueGetter
+  isNewValueGetter,
+  extendApplyValue,
+  applyNewValue
 } from "./State";
 export { default as ValueContainer, withValueContainer } from "./ValueContainer";
