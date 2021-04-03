@@ -4,7 +4,7 @@ export {
   StateOptions,
   NewValueGetter,
   NewValue,
-  ApplyValue as UpdateValue,
+  ApplyValue,
   SetValue,
   SetValueExtension,
   state,
