@@ -31,7 +31,7 @@ describe("subState", () => {
     testee = subState<Value, number>({
       state: testState,
       select: (value) => value.secondProperty.aSubProperty,
-      merge: (value, subValue) => {
+      merge: (subValue) => (value) => {
         return {
           ...value,
           secondProperty: {

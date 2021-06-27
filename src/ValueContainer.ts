@@ -12,6 +12,7 @@ export function withValueContainer<TValue>(valueContainer: ValueContainer<TValue
       value$: valueContainer.value$
     };
 
-    return Object.defineProperty(extendedObject, "value", { get: () => valueContainer.value });
+    return Object.defineProperty(extendedObject, "value", { get: () => valueContainer.value }) as TTarget &
+      ValueContainer<TValue>;
   };
 }
