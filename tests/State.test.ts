@@ -109,23 +109,6 @@ describe("applyNewValue", () => {
 
   type TestValue = typeof testValue;
 
-  it("takes a partial state object and merges the current state with the values from passed partial state", () => {
-    // Arrange
-    const testPartialState: Partial<TestValue> = {
-      secondProperty: 2123
-    };
-
-    // Act
-    const result = applyNewValue(testValue, testPartialState);
-
-    // Assert
-    expect(result).toEqual({
-      firstProperty: testValue.firstProperty,
-      secondProperty: testPartialState.secondProperty,
-      thirdProperty: testValue.thirdProperty
-    });
-  });
-
   it("takes a function and passes current state to it", () => {
     // Arrange
     const updateState = jest.fn((state) => state);
@@ -153,7 +136,7 @@ describe("applyNewValue", () => {
     expect(result).toBe(newTestState);
   });
 
-  it("replaces primitive values", () => {
+  it("replaces a value", () => {
     // Arrange
     const currentValue = 0;
     const newValue = 10;
@@ -163,14 +146,5 @@ describe("applyNewValue", () => {
 
     // Assert
     expect(result).toBe(newValue);
-  });
-
-  it("does a shallow merge", () => {
-    // Arrange
-    // Act
-    const result = applyNewValue(testValue, { thirdProperty: [] });
-
-    // Assert
-    expect(result.thirdProperty.length).toBe(0);
   });
 });

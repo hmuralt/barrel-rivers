@@ -66,7 +66,10 @@ describe("subState", () => {
       compareMock.mockReturnValue(false);
 
       // act
-      testState.set({ secondProperty: { aSubProperty: newValue } });
+      testState.set({
+        ...testState.value,
+        secondProperty: { ...testState.value.secondProperty, aSubProperty: newValue }
+      });
 
       // assert
       expect(callback).toHaveBeenCalledWith(newValue);
@@ -80,7 +83,7 @@ describe("subState", () => {
       compareMock.mockReturnValue(true);
 
       // act
-      testState.set({ secondProperty: { aSubProperty: testState.value.secondProperty.aSubProperty } });
+      testState.set({ ...testState.value });
 
       // assert
       expect(callback).not.toHaveBeenCalled();
