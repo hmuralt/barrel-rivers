@@ -3,8 +3,22 @@ import {
   addArrayItem,
   addOrUpdateArrayItem,
   withEqual,
-  removeArrayItem
+  removeArrayItem,
+  shallowMerge
 } from "../src/StateManipulationFunctions";
+
+describe("shallowMerge", () => {
+  it("merges an object with a partial of the same type", () => {
+    const testObject = { propertyOne: 1, propertyTwo: 2 };
+    const testPartial: Partial<typeof testObject> = { propertyOne: 11 };
+    const testee = shallowMerge(testPartial);
+
+    const result = testee(testObject);
+
+    expect(result.propertyOne).toBe(testPartial.propertyOne);
+    expect(result.propertyTwo).toBe(testObject.propertyTwo);
+  });
+});
 
 describe("update", () => {
   const testObject = {

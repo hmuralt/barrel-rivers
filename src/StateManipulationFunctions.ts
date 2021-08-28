@@ -9,6 +9,10 @@ interface GetCall {
 export type PropertySelector<TObject, TPropertyValue> = (obj: TObject) => TPropertyValue;
 export type NewValueGetter<TValue> = (currentValue: TValue) => TValue;
 
+export function shallowMerge<TObject extends {}>(partial: Partial<TObject>) {
+  return (currentObject: TObject): TObject => ({ ...currentObject, ...partial });
+}
+
 export function update<TObject extends {}, TPropertyValue>(
   propertySelector: PropertySelector<TObject, TPropertyValue>,
   newValue: TPropertyValue | NewValueGetter<TPropertyValue>
