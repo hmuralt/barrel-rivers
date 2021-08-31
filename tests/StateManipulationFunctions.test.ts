@@ -2,7 +2,6 @@ import {
   update,
   addArrayItem,
   addOrUpdateArrayItem,
-  withEqual,
   removeArrayItem,
   shallowMerge
 } from "../src/StateManipulationFunctions";
@@ -136,9 +135,9 @@ describe("addArrayItem", () => {
 });
 
 describe("removeArrayItem", () => {
-  it("returns a function to remove the passed item from an array", () => {
+  it("returns a function to remove from an array by predicate", () => {
     const testItem = 32;
-    const testee = removeArrayItem(testItem);
+    const testee = removeArrayItem((item) => item === testItem);
 
     const result = testee([255, 326, 32]);
 
@@ -150,18 +149,9 @@ describe("removeArrayItem", () => {
 describe("addOrUpdateArrayItem", () => {
   it("returns a function to add the passed primitive item to an array if it doesn't exist", () => {
     const testItem = { id: 3 };
-    const testee = addOrUpdateArrayItem(testItem);
+    const testee = addOrUpdateArrayItem(testItem, () => false);
 
     const result = testee([{ id: 1 }, { id: 2 }]);
-
-    expect(result[2]).toBe(testItem);
-  });
-
-  it("returns a function to add the passed item to an array if it doesn't exist", () => {
-    const testItem = { prop1: "a test string" };
-    const testee = addOrUpdateArrayItem(testItem);
-
-    const result = testee([{ prop1: "another string" }, { prop1: "yet another string" }]);
 
     expect(result[2]).toBe(testItem);
   });
@@ -179,7 +169,7 @@ describe("addOrUpdateArrayItem", () => {
   it("returns a function to update the passed item of an array using withEqual property check", () => {
     const testItem = { id: 3, prop1: "a new test string" };
 
-    const testee = addOrUpdateArrayItem(testItem, withEqual("id"));
+    const testee = addOrUpdateArrayItem(testItem, (item) => item.id === testItem.id);
 
     const result = testee([
       { id: 1, prop1: "another string" },

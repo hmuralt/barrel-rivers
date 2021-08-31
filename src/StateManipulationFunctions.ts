@@ -1,5 +1,4 @@
 import clone from "lodash.clone";
-import eq from "lodash.eq";
 
 interface GetCall {
   target: {};
@@ -32,25 +31,20 @@ export function addArrayItem<TItem>(item: TItem) {
   return (arrayToUpdate: TItem[]): TItem[] => [...arrayToUpdate, item];
 }
 
-export function removeArrayItem<TItem>(
-  item: TItem,
-  isEqual?: (a: TItem, b: TItem) => boolean
-): (arrayToUpdate: TItem[]) => TItem[] {
-  const isEqualItem = isEqual ?? eq;
+export function removeArrayItem<TItem>(predicate: (item: TItem) => boolean): (arrayToUpdate: TItem[]) => TItem[] {
   return (arrayToUpdate: TItem[]) => {
-    return arrayToUpdate.filter((currentItem) => !isEqualItem(currentItem, item));
+    return arrayToUpdate.filter((currentItem) => !predicate(currentItem));
   };
 }
 
 export function addOrUpdateArrayItem<TItem>(
   item: TItem,
-  isEqual?: (a: TItem, b: TItem) => boolean
+  predicate: (item: TItem) => boolean
 ): (arrayToUpdate: TItem[]) => TItem[] {
-  const isEqualItem = isEqual ?? eq;
   return (arrayToUpdate: TItem[]): TItem[] => {
     let isUpdated = false;
     const updatedArray = arrayToUpdate.map((currentItem) => {
-      if (isEqualItem(currentItem, item)) {
+      if (predicate(currentItem)) {
         isUpdated = true;
         return item;
       }
@@ -67,27 +61,18 @@ export function addOrUpdateArrayItem<TItem>(
 }
 
 export function updateArrayItem<TItem>(
-  item: Partial<TItem>,
-  isEqual?: (a: Partial<TItem>, b: Partial<TItem>) => boolean
+  item: TItem,
+  predicate: (item: TItem) => boolean
 ): (arrayToUpdate: TItem[]) => TItem[] {
-  const isEqualItem = isEqual ?? eq;
   return (arrayToUpdate: TItem[]) => {
     return arrayToUpdate.map((currentItem) => {
-      if (isEqualItem(currentItem, item)) {
-        return {
-          ...currentItem,
-          ...item
-        };
+      if (predicate(currentItem)) {
+        return item;
       }
 
       return currentItem;
     });
   };
-}
-
-export function withEqual<TItem>(property: keyof TItem) {
-  return (a: Partial<TItem>, b: Partial<TItem>): boolean =>
-    a[property] !== undefined && b[property] !== undefined && a[property] === b[property];
 }
 
 function getProxiedObject<TObject extends object>(obj: TObject, addGetCall: (getCall: GetCall) => void): TObject {
