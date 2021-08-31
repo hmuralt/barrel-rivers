@@ -37,7 +37,7 @@ export function removeArrayItem<TItem>(predicate: (item: TItem) => boolean): (ar
   };
 }
 
-export function addOrUpdateArrayItem<TItem>(
+export function addOrReplaceArrayItem<TItem>(
   item: TItem,
   predicate: (item: TItem) => boolean
 ): (arrayToUpdate: TItem[]) => TItem[] {
@@ -60,7 +60,22 @@ export function addOrUpdateArrayItem<TItem>(
   };
 }
 
-export function updateArrayItem<TItem>(
+export function updateArrayItem<TItem extends {}>(
+  item: Partial<TItem>,
+  predicate: (item: TItem) => boolean
+): (arrayToUpdate: TItem[]) => TItem[] {
+  return (arrayToUpdate: TItem[]) => {
+    return arrayToUpdate.map((currentItem) => {
+      if (predicate(currentItem)) {
+        return { ...currentItem, ...item };
+      }
+
+      return currentItem;
+    });
+  };
+}
+
+export function replaceArrayItem<TItem>(
   item: TItem,
   predicate: (item: TItem) => boolean
 ): (arrayToUpdate: TItem[]) => TItem[] {

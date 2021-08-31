@@ -1,9 +1,11 @@
 import {
   update,
   addArrayItem,
-  addOrUpdateArrayItem,
+  addOrReplaceArrayItem,
   removeArrayItem,
-  shallowMerge
+  shallowMerge,
+  updateArrayItem,
+  replaceArrayItem
 } from "../src/StateManipulationFunctions";
 
 describe("shallowMerge", () => {
@@ -146,30 +148,36 @@ describe("removeArrayItem", () => {
   });
 });
 
-describe("addOrUpdateArrayItem", () => {
-  it("returns a function to add the passed primitive item to an array if it doesn't exist", () => {
+describe("addOrReplaceArrayItem", () => {
+  it("returns a function to add the passed primitive item to an array when predicate is false", () => {
     const testItem = { id: 3 };
-    const testee = addOrUpdateArrayItem(testItem, () => false);
+    const testee = addOrReplaceArrayItem(testItem, () => false);
 
     const result = testee([{ id: 1 }, { id: 2 }]);
 
     expect(result[2]).toBe(testItem);
   });
 
-  it("returns a function to update the passed item of an array using custom isEqual check", () => {
-    const testItem = { prop1: "a new test string" };
-
-    const testee = addOrUpdateArrayItem(testItem, (item) => item.prop1 === "a test string");
-
-    const result = testee([{ prop1: "another string" }, { prop1: "yet another string" }, { prop1: "a test string" }]);
-
-    expect(result[2].prop1).toBe(testItem.prop1);
-  });
-
-  it("returns a function to update the passed item of an array using withEqual property check", () => {
+  it("returns a function to replace item(s) of an array with the passed item when predicate is true", () => {
     const testItem = { id: 3, prop1: "a new test string" };
 
-    const testee = addOrUpdateArrayItem(testItem, (item) => item.id === testItem.id);
+    const testee = addOrReplaceArrayItem(testItem, (item) => item.id === testItem.id);
+
+    const result = testee([
+      { id: 1, prop1: "another string" },
+      { id: 2, prop1: "yet another string" },
+      { id: 3, prop1: "a test string" }
+    ]);
+
+    expect(result[2]).toBe(testItem);
+  });
+});
+
+describe("updateArrayItem", () => {
+  it("returns a function to update item(s) of an array with the properties of the passed item when predicate is true", () => {
+    const testItem = { id: 3, prop1: "a new test string" };
+
+    const testee = updateArrayItem(testItem, (item) => item.id === testItem.id);
 
     const result = testee([
       { id: 1, prop1: "another string" },
@@ -178,5 +186,22 @@ describe("addOrUpdateArrayItem", () => {
     ]);
 
     expect(result[2].prop1).toBe(testItem.prop1);
+    expect(result[2]).not.toBe(testItem);
+  });
+});
+
+describe("replaceArrayItem", () => {
+  it("returns a function to replace item(s) of an array with the properties of the passed item when predicate is true", () => {
+    const testItem = { id: 3, prop1: "a new test string" };
+
+    const testee = replaceArrayItem(testItem, (item) => item.id === testItem.id);
+
+    const result = testee([
+      { id: 1, prop1: "another string" },
+      { id: 2, prop1: "yet another string" },
+      { id: 3, prop1: "a test string" }
+    ]);
+
+    expect(result[2]).toBe(testItem);
   });
 });
