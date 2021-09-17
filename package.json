@@ -1,6 +1,6 @@
 {
   "name": "barrel-rivers",
-  "version": "6.3.0",
+  "version": "6.4.0",
   "description": "RxJS based state management",
   "main": "index.js",
   "repository": {
