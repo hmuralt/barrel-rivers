@@ -12,7 +12,7 @@ describe("shallowMerge", () => {
   it("merges an object with a partial of the same type", () => {
     const testObject = { propertyOne: 1, propertyTwo: 2 };
     const testPartial: Partial<typeof testObject> = { propertyOne: 11 };
-    const testee = shallowMerge(testPartial);
+    const testee = shallowMerge<typeof testObject, Partial<typeof testObject>>(testPartial);
 
     const result = testee(testObject);
 
