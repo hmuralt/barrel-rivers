@@ -9,7 +9,7 @@ export type PropertySelector<TObject, TPropertyValue> = (obj: TObject) => TPrope
 export type NewValueGetter<TValue> = (currentValue: TValue) => TValue;
 export type Predicate<TItem> = (item: TItem) => boolean;
 
-export function shallowMerge<TObject extends {}>(partial: Partial<TObject>) {
+export function shallowMerge<TObject extends {}, TPartial extends Partial<TObject>>(partial: TPartial) {
   return (currentObject: TObject): TObject => ({ ...currentObject, ...partial });
 }
 
