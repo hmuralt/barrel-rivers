@@ -146,6 +146,16 @@ describe("removeArrayItem", () => {
     expect(result.length).toBe(2);
     expect(result).not.toContain(testItem);
   });
+
+  it("returns a function to remove from an array by item strict equality", () => {
+    const testItem = 32;
+    const testee = removeArrayItem(testItem);
+
+    const result = testee([255, 326, 32]);
+
+    expect(result.length).toBe(2);
+    expect(result).not.toContain(testItem);
+  });
 });
 
 describe("addOrReplaceArrayItem", () => {
