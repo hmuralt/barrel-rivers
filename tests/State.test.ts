@@ -147,42 +147,4 @@ describe("applyNewValue", () => {
     // Assert
     expect(result).toBe(newValue);
   });
-
-  it("takes a partial state object and merges the current state with the values from passed partial state", () => {
-    // Arrange
-    const testPartialState: Partial<TestValue> = {
-      secondProperty: 2123
-    };
-
-    // Act
-    const result = applyNewValue(testValue, testPartialState);
-
-    // Assert
-    expect(result).toEqual({
-      firstProperty: testValue.firstProperty,
-      secondProperty: testPartialState.secondProperty,
-      thirdProperty: testValue.thirdProperty
-    });
-  });
-
-  it("does a shallow merge", () => {
-    // Arrange
-    // Act
-    const result = applyNewValue(testValue, { thirdProperty: [] });
-
-    // Assert
-    expect(result.thirdProperty.length).toBe(0);
-  });
-
-  it("does not a shallow merge when it's not a plain object", () => {
-    // Arrange
-    const date1 = new Date();
-    const date2 = new Date();
-
-    // Act
-    const result = applyNewValue(date1, date2);
-
-    // Assert
-    expect(result).toBe(0);
-  });
 });

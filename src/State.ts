@@ -2,10 +2,7 @@ import { BehaviorSubject } from "rxjs";
 import ValueContainer from "./ValueContainer";
 
 export type NewValueGetter<TValue> = (currentValue: TValue) => TValue;
-export type NewValue<TValue> =
-  | TValue
-  | NewValueGetter<TValue>
-  | (TValue extends Record<string | number | symbol, unknown> ? Partial<TValue> : never);
+export type NewValue<TValue> = TValue | NewValueGetter<TValue>;
 export type ApplyValue<TValue> = (currentValue: TValue, newValue: NewValue<TValue>) => TValue;
 export type SetValue<TValue> = (newValue: NewValue<TValue>) => void;
 export type SetValueExtension<TValue> = (next: ApplyValue<TValue>) => ApplyValue<TValue>;
@@ -55,13 +52,5 @@ export function applyNewValue<TValue>(currentValue: TValue, newValue: NewValue<T
     return newValue(currentValue);
   }
 
-  if (typeof newValue === "object" && isPlainObject<TValue>(newValue)) {
-    return { ...currentValue, ...newValue };
-  }
-
   return newValue;
-}
-
-function isPlainObject<TValue extends {}>(newValue: {}): newValue is Partial<TValue> {
-  return newValue !== null && newValue.constructor === Object;
 }
