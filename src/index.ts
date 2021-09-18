@@ -1,4 +1,5 @@
 export * from "./StateManipulationFunctions";
+export { shallowMerge as merge } from "./StateManipulationFunctions";
 export {
   default as State,
   StateOptions,
