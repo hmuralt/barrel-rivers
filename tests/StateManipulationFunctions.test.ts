@@ -5,7 +5,8 @@ import {
   removeArrayItem,
   shallowMerge,
   updateArrayItem,
-  replaceArrayItem
+  replaceArrayItem,
+  property
 } from "../src/StateManipulationFunctions";
 
 describe("shallowMerge", () => {
@@ -213,5 +214,17 @@ describe("replaceArrayItem", () => {
     ]);
 
     expect(result[2]).toBe(testItem);
+  });
+});
+
+describe("property", () => {
+  it("returns a function to a property value", () => {
+    const testItem = { prop1: "a test string" };
+    const newProp1Value = "A few new things";
+    const testee = property<typeof testItem, "prop1">("prop1", newProp1Value);
+
+    const result = testee(testItem);
+
+    expect(result.prop1).toBe(newProp1Value);
   });
 });

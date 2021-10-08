@@ -28,6 +28,14 @@ export function update<TObject extends {}, TPropertyValue>(
   };
 }
 
+export function property<TObject extends {}, TKey extends keyof TObject>(key: TKey, newValue: TObject[TKey]) {
+  return (currentObject: TObject): TObject => {
+    const value = isNewValueGetter(newValue) ? newValue(currentObject[key]) : newValue;
+
+    return { ...currentObject, [key]: value };
+  };
+}
+
 export function addArrayItem<TItem>(item: TItem) {
   return (arrayToUpdate: TItem[]): TItem[] => [...arrayToUpdate, item];
 }
