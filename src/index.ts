@@ -14,4 +14,5 @@ export {
   applyNewValue
 } from "./State";
 export { subState } from "./SubState";
+export { mergedState } from "./MergedState";
 export { default as ValueContainer, withValueContainer } from "./ValueContainer";
