@@ -1,4 +1,4 @@
-import { ApplyValue, SetValueExtension } from "./../src/State";
+import { ApplyValue, ApplyValueExtension } from "./../src/State";
 import { skip } from "rxjs/operators";
 import State, { applyNewValue, extendApplyValue, isNewValueGetter, state } from "../src/State";
 
@@ -68,7 +68,7 @@ describe("extendApplyValue", () => {
     }
     return currentValue + newValue;
   };
-  const extension1: SetValueExtension<number> = (next) => (currentValue, newValue) => {
+  const extension1: ApplyValueExtension<number> = (next) => (currentValue, newValue) => {
     const nextValue = next(currentValue, newValue);
 
     if (nextValue === 100) {
@@ -78,7 +78,7 @@ describe("extendApplyValue", () => {
     return nextValue;
   };
 
-  const extension2: SetValueExtension<number> = (next) => (currentValue, newValue) => {
+  const extension2: ApplyValueExtension<number> = (next) => (currentValue, newValue) => {
     const nextValue = next(currentValue, newValue);
 
     if (nextValue === 10) {

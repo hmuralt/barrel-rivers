@@ -7,7 +7,7 @@ export {
   NewValue,
   ApplyValue,
   SetValue,
-  SetValueExtension,
+  ApplyValueExtension,
   state,
   isNewValueGetter,
   extendApplyValue,

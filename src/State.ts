@@ -5,7 +5,7 @@ export type NewValueGetter<TValue> = (currentValue: TValue) => TValue;
 export type NewValue<TValue> = TValue | NewValueGetter<TValue>;
 export type ApplyValue<TValue> = (currentValue: TValue, newValue: NewValue<TValue>) => TValue;
 export type SetValue<TValue> = (newValue: NewValue<TValue>) => void;
-export type SetValueExtension<TValue> = (next: ApplyValue<TValue>) => ApplyValue<TValue>;
+export type ApplyValueExtension<TValue> = (next: ApplyValue<TValue>) => ApplyValue<TValue>;
 
 export interface StateOptions<TValue> {
   initialValue: TValue;
@@ -39,12 +39,15 @@ export function isNewValueGetter<TValue>(
 }
 
 export function extendApplyValue<TValue>(
-  setValueExtensions: SetValueExtension<TValue>[],
+  applyValueExtensions: ApplyValueExtension<TValue>[],
   applyValue: ApplyValue<TValue> = applyNewValue
 ): ApplyValue<TValue> {
-  return setValueExtensions.reduceRight((next: ApplyValue<TValue>, setValueExtension: SetValueExtension<TValue>) => {
-    return setValueExtension(next);
-  }, applyValue);
+  return applyValueExtensions.reduceRight(
+    (next: ApplyValue<TValue>, applyValueExtension: ApplyValueExtension<TValue>) => {
+      return applyValueExtension(next);
+    },
+    applyValue
+  );
 }
 
 export function applyNewValue<TValue>(currentValue: TValue, newValue: NewValue<TValue>): TValue {
