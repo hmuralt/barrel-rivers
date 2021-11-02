@@ -99,6 +99,12 @@ export function replaceArrayItem<TItem>(item: TItem, predicate: Predicate<TItem>
   };
 }
 
+export function withEqual<T>(a: T, key: keyof T) {
+  return (b: T): boolean => {
+    return a[key] === b[key];
+  };
+}
+
 function getProxiedObject<TObject extends object>(obj: TObject, addGetCall: (getCall: GetCall) => void): TObject {
   return new Proxy(obj, {
     get: (target, key, receiver) => {
