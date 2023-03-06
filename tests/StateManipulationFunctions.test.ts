@@ -6,7 +6,8 @@ import {
   shallowMerge,
   updateArrayItem,
   replaceArrayItem,
-  property
+  property,
+  deleteProperty
 } from "../src/StateManipulationFunctions";
 
 describe("shallowMerge", () => {
@@ -226,5 +227,32 @@ describe("property", () => {
     const result = testee(testItem);
 
     expect(result.prop1).toBe(newProp1Value);
+  });
+});
+
+describe("deleteProperty", () => {
+  it("returns a function to delete an optional property by key", () => {
+    interface TestItem {
+      prop1?: string;
+    }
+    const testItem = { prop1: "a test string" };
+    const testee = deleteProperty<TestItem>("prop1");
+
+    const result = testee(testItem);
+
+    expect(Object.keys(result).length).toBe(0);
+  });
+
+  it("returns a function that deletes only property with passed key", () => {
+    interface TestItem {
+      prop1?: string;
+      prop2: string;
+    }
+    const testItem = { prop1: "a test string", prop2: "another test string" };
+    const testee = deleteProperty<TestItem>("prop1");
+
+    const result = testee(testItem);
+
+    expect(result.prop2).toBe(testItem.prop2);
   });
 });

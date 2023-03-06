@@ -36,6 +36,14 @@ export function property<TObject extends {}, TKey extends keyof TObject>(key: TK
   };
 }
 
+export function deleteProperty<TObject extends object>(key: keyof OptionalPropertiesOf<TObject>) {
+  return (state: TObject): TObject => {
+    const newState = { ...state };
+    delete newState[key as keyof TObject];
+    return newState;
+  };
+}
+
 export function addArrayItem<TItem>(item: TItem) {
   return (arrayToUpdate: TItem[]): TItem[] => [...arrayToUpdate, item];
 }
@@ -116,7 +124,7 @@ function getProxiedObject<TObject extends object>(obj: TObject, addGetCall: (get
       const value = Reflect.get(target, key, receiver);
 
       if (typeof value === "object") {
-        return getProxiedObject(value, addGetCall);
+        return getProxiedObject(value as Object, addGetCall);
       }
 
       return value;
@@ -149,3 +157,9 @@ function isNewValueGetter<T>(newValue: T | NewValueGetter<T>): newValue is NewVa
 function isPredicate<T>(predicate: T | Predicate<T>): predicate is Predicate<T> {
   return typeof predicate === "function";
 }
+
+type OptionalPropertiesOf<TObject extends object> = {
+  [K in keyof TObject as TObject extends Record<K, TObject[K]> ? never : K]: TObject extends Record<K, TObject[K]>
+    ? never
+    : TObject[K];
+};
