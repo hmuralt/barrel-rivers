@@ -1,19 +1,20 @@
 import { skip } from "rxjs/operators";
 import State, { state } from "../src/State";
-import { mergedState } from "../src/MergedState";
+import { SplitResult, mergedState } from "../src/MergedState";
 
 function testMerge(values: [number, string]) {
   return `${values[0]}-${values[1]}`;
 }
 
-function testSplit(mergedValue: string): [number, string] {
+function testSplit(mergedValue: string) {
   const splitValues = mergedValue.split("-");
-  return [parseInt(splitValues[0]), splitValues[1]];
+  return [parseInt(splitValues[0]), splitValues[1]] as SplitResult<number, string>;
 }
 
 describe("mergedState", () => {
   const compareMock = jest.fn((a, b) => a === b);
   const applyNewMergedValueMock = jest.fn((_a, b) => b);
+  const needsFeedingSplitValue1Mock = jest.fn((_a: number, _b: number) => true);
   let testState1: State<number>;
   let testState2: State<string>;
   let testee: State<string>;
@@ -21,6 +22,7 @@ describe("mergedState", () => {
   beforeEach(() => {
     compareMock.mockClear();
     applyNewMergedValueMock.mockClear();
+    needsFeedingSplitValue1Mock.mockClear();
 
     testState1 = state({ initialValue: 1 });
     testState2 = state({ initialValue: "a" });
@@ -29,8 +31,9 @@ describe("mergedState", () => {
       states: [testState1, testState2],
       merge: testMerge,
       split: testSplit,
-      compare: compareMock,
-      applyNewMergedValue: applyNewMergedValueMock
+      compareMergedValue: compareMock,
+      applyNewMergedValue: applyNewMergedValueMock,
+      needsFeedingSplitValue1: needsFeedingSplitValue1Mock
     });
   });
 
@@ -106,6 +109,34 @@ describe("mergedState", () => {
 
       // assert
       expect(testState2.value).toBe(newValue2);
+    });
+
+    it("feeds split value 1 when needsFeedingSplitValue1 is returning true", () => {
+      // arrange
+      jest.spyOn(testState1, "set");
+      needsFeedingSplitValue1Mock.mockImplementation(
+        (currentValue: number, newValue: number) => currentValue !== newValue
+      );
+
+      // act
+      testee.set(testMerge([testState1.value + 1, "test"]));
+
+      // assert
+      expect(testState1.set).toHaveBeenCalled();
+    });
+
+    it("doesn't feed split value 1 when needsFeedingSplitValue1 is returning false", () => {
+      // arrange
+      jest.spyOn(testState1, "set");
+      needsFeedingSplitValue1Mock.mockImplementation(
+        (currentValue: number, newValue: number) => currentValue !== newValue
+      );
+
+      // act
+      testee.set(testMerge([testState1.value, "test"]));
+
+      // assert
+      expect(testState1.set).not.toHaveBeenCalled();
     });
   });
 });
