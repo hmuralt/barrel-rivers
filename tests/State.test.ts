@@ -6,11 +6,16 @@ describe("state", () => {
   describe("set", () => {
     const initialTestValue = 0;
     const testApplyValue = jest.fn((currentValue, newValue) => currentValue + newValue);
+    const needsFeedingNewValueMock = jest.fn((currentValue, nextValue) => nextValue !== currentValue);
     let testee: State<number>;
 
     beforeEach(() => {
       testApplyValue.mockClear();
-      testee = state({ initialValue: initialTestValue, applyValue: testApplyValue });
+      testee = state({
+        initialValue: initialTestValue,
+        applyValue: testApplyValue,
+        needsFeedingNewValue: needsFeedingNewValueMock
+      });
     });
 
     it("updates the new value", () => {
@@ -37,6 +42,18 @@ describe("state", () => {
 
       // Act
       testee.set(newTestValue);
+    });
+
+    it("does not emit the new value when needsFeedingNewValue returns false", () => {
+      // Arrange
+      const handle = jest.fn();
+      testee.value$.subscribe(handle);
+
+      // Act
+      testee.set(testee.value);
+
+      // Assert
+      expect(handle).toHaveBeenCalledTimes(1);
     });
   });
 });
