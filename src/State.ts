@@ -6,17 +6,26 @@ export type NewValue<TValue> = TValue | NewValueGetter<TValue>;
 export type ApplyValue<TValue> = (currentValue: TValue, newValue: NewValue<TValue>) => TValue;
 export type SetValue<TValue> = (newValue: NewValue<TValue>) => void;
 export type ApplyValueExtension<TValue> = (next: ApplyValue<TValue>) => ApplyValue<TValue>;
+export type NeedsFeedingNewValue<TValue> = (currentValue: TValue, nextValue: TValue) => boolean;
 
 export interface StateOptions<TValue> {
   initialValue: TValue;
   applyValue?: ApplyValue<TValue>;
+  needsFeedingNewValue?: NeedsFeedingNewValue<TValue>;
 }
 
-export function state<TValue>({ initialValue, applyValue = applyNewValue }: StateOptions<TValue>): State<TValue> {
+export function state<TValue>({
+  initialValue,
+  applyValue = applyNewValue,
+  needsFeedingNewValue
+}: StateOptions<TValue>): State<TValue> {
   const stateSubject = new BehaviorSubject(initialValue);
 
   const set = (newValue: NewValue<TValue>) => {
-    stateSubject.next(applyValue(stateSubject.value, newValue));
+    const valueToFeed = applyValue(stateSubject.value, newValue);
+    if (needsFeedingNewValue === undefined || needsFeedingNewValue(stateSubject.value, valueToFeed)) {
+      stateSubject.next(valueToFeed);
+    }
   };
 
   return {
