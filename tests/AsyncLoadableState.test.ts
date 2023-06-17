@@ -309,5 +309,24 @@ describe("AsyncState", () => {
       expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: true, errors: [] });
       expect(statusCallback).toHaveBeenLastCalledWith({ isLoading: false, errors: [error1, error2] });
     });
+
+    it("resets errors when new resolved promise is set", async () => {
+      // Arrange
+      const error = new Error("test error");
+      const promise1 = Promise.reject(error);
+      const promise2 = Promise.resolve(5);
+      const statusCallback = jest.fn();
+      testee.overallSetStatus$.subscribe(statusCallback);
+
+      // Act
+      testee.set(promise1);
+      testee.set(promise2);
+
+      // Assert
+      await promise1.catch(() => {});
+      await promise2;
+      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: true, errors: [] });
+      expect(statusCallback).toHaveBeenLastCalledWith({ isLoading: false, errors: [] });
+    });
   });
 });
