@@ -1,4 +1,4 @@
-import { Observable, Subject, from, isObservable, map, scan } from "rxjs";
+import { BehaviorSubject, Observable, distinctUntilChanged, from, isObservable, map, scan, takeWhile } from "rxjs";
 import State, { NewValue } from "./State";
 import { withValueContainer } from "./ValueContainer";
 
@@ -17,16 +17,18 @@ export interface OverallSetStatus {
 }
 
 export function asyncLoadableState<TValue>(state: State<TValue>): AsyncLoadableState<TValue> {
-  const setStatusSubject = new Subject<SetStatus>();
+  const emptyErrors: unknown[] = [];
+  const setStatusSubject = new BehaviorSubject<SetStatus>({ isLoading: false });
   const overallSetStatus$ = setStatusSubject.pipe(
     scan(
       (accumulated, current) => ({
-        loadingCount: accumulated.loadingCount + (current.isLoading ? 1 : -1),
-        errors: current.error ? [...accumulated.errors, current.error] : []
+        loadingCount: Math.max(0, accumulated.loadingCount + (current.isLoading ? 1 : -1)),
+        errors: current.error ? [...accumulated.errors, current.error] : emptyErrors
       }),
       { loadingCount: 0, errors: [] as unknown[] }
     ),
-    map((accumulated) => ({ isLoading: accumulated.loadingCount > 0, errors: accumulated.errors } as OverallSetStatus))
+    map((accumulated) => ({ isLoading: accumulated.loadingCount > 0, errors: accumulated.errors } as OverallSetStatus)),
+    distinctUntilChanged((a, b) => a.isLoading === b.isLoading && a.errors === b.errors)
   );
 
   const next = (newValue: NewValue<TValue>) => {
@@ -50,6 +52,10 @@ export function asyncLoadableState<TValue>(state: State<TValue>): AsyncLoadableS
   };
 
   return withValueContainer(state)({ setStatus$: setStatusSubject.asObservable(), overallSetStatus$, set });
+}
+
+export function oneLoadCycle(setStatus$: Observable<SetStatus>) {
+  return setStatus$.pipe(takeWhile((status) => status.isLoading, true));
 }
 
 export default interface AsyncLoadableState<TValue> extends State<TValue> {

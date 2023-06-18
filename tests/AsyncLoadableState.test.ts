@@ -105,8 +105,9 @@ describe("AsyncState", () => {
 
       // Assert
       await promise;
-      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: true });
-      expect(statusCallback).toHaveBeenLastCalledWith({ isLoading: false });
+      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: false });
+      expect(statusCallback).toHaveBeenNthCalledWith(2, { isLoading: true });
+      expect(statusCallback).toHaveBeenNthCalledWith(3, { isLoading: false });
     });
 
     it("emits error when promise set and error is thrown", async () => {
@@ -121,8 +122,9 @@ describe("AsyncState", () => {
 
       // Assert
       await promise.catch(() => {});
-      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: true });
-      expect(statusCallback).toHaveBeenLastCalledWith({ isLoading: false, error });
+      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: false });
+      expect(statusCallback).toHaveBeenNthCalledWith(2, { isLoading: true });
+      expect(statusCallback).toHaveBeenNthCalledWith(3, { isLoading: false, error });
     });
 
     it("emits isLoading when observable set", async () => {
@@ -139,8 +141,9 @@ describe("AsyncState", () => {
       subject.complete();
 
       // Assert
-      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: true });
-      expect(statusCallback).toHaveBeenLastCalledWith({ isLoading: false });
+      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: false });
+      expect(statusCallback).toHaveBeenNthCalledWith(2, { isLoading: true });
+      expect(statusCallback).toHaveBeenNthCalledWith(3, { isLoading: false });
     });
 
     it("emits error when observable set and error is thrown", async () => {
@@ -156,8 +159,9 @@ describe("AsyncState", () => {
       subject.error(error);
 
       // Assert
-      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: true });
-      expect(statusCallback).toHaveBeenLastCalledWith({ isLoading: false, error });
+      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: false });
+      expect(statusCallback).toHaveBeenNthCalledWith(2, { isLoading: true });
+      expect(statusCallback).toHaveBeenNthCalledWith(3, { isLoading: false, error });
     });
   });
 
@@ -173,8 +177,9 @@ describe("AsyncState", () => {
 
       // Assert
       await promise;
-      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: true, errors: [] });
-      expect(statusCallback).toHaveBeenLastCalledWith({ isLoading: false, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: false, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(2, { isLoading: true, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(3, { isLoading: false, errors: [] });
     });
 
     it("emits isLoading when multiple promise are set", async () => {
@@ -190,8 +195,9 @@ describe("AsyncState", () => {
 
       // Assert
       await Promise.all([promise1, promise2]);
-      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: true, errors: [] });
-      expect(statusCallback).toHaveBeenLastCalledWith({ isLoading: false, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: false, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(2, { isLoading: true, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(3, { isLoading: false, errors: [] });
     });
 
     it("emits error when promise set and error is thrown", async () => {
@@ -206,8 +212,9 @@ describe("AsyncState", () => {
 
       // Assert
       await promise.catch(() => {});
-      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: true, errors: [] });
-      expect(statusCallback).toHaveBeenLastCalledWith({ isLoading: false, errors: [error] });
+      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: false, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(2, { isLoading: true, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(3, { isLoading: false, errors: [error] });
     });
 
     it("emits error when multiple promise are set and error is thrown", async () => {
@@ -225,8 +232,10 @@ describe("AsyncState", () => {
 
       // Assert
       await Promise.all([promise1.catch(() => {}), promise2.catch(() => {})]);
-      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: true, errors: [] });
-      expect(statusCallback).toHaveBeenLastCalledWith({ isLoading: false, errors: [error1, error2] });
+      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: false, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(2, { isLoading: true, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(3, { isLoading: true, errors: [error1] });
+      expect(statusCallback).toHaveBeenNthCalledWith(4, { isLoading: false, errors: [error1, error2] });
     });
 
     it("emits isLoading when observable set", async () => {
@@ -243,8 +252,9 @@ describe("AsyncState", () => {
       subject.complete();
 
       // Assert
-      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: true, errors: [] });
-      expect(statusCallback).toHaveBeenLastCalledWith({ isLoading: false, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: false, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(2, { isLoading: true, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(3, { isLoading: false, errors: [] });
     });
 
     it("emits isLoading when multiple observable are set", async () => {
@@ -267,8 +277,9 @@ describe("AsyncState", () => {
       subject2.complete();
 
       // Assert
-      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: true, errors: [] });
-      expect(statusCallback).toHaveBeenLastCalledWith({ isLoading: false, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: false, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(2, { isLoading: true, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(3, { isLoading: false, errors: [] });
     });
 
     it("emits error when observable set and error is thrown", async () => {
@@ -284,8 +295,9 @@ describe("AsyncState", () => {
       subject.error(error);
 
       // Assert
-      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: true, errors: [] });
-      expect(statusCallback).toHaveBeenLastCalledWith({ isLoading: false, errors: [error] });
+      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: false, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(2, { isLoading: true, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(3, { isLoading: false, errors: [error] });
     });
 
     it("emits error when multiple observable are set and error is thrown", async () => {
@@ -306,8 +318,10 @@ describe("AsyncState", () => {
       subject2.error(error2);
 
       // Assert
-      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: true, errors: [] });
-      expect(statusCallback).toHaveBeenLastCalledWith({ isLoading: false, errors: [error1, error2] });
+      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: false, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(2, { isLoading: true, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(3, { isLoading: true, errors: [error1] });
+      expect(statusCallback).toHaveBeenNthCalledWith(4, { isLoading: false, errors: [error1, error2] });
     });
 
     it("resets errors when new resolved promise is set", async () => {
@@ -325,8 +339,10 @@ describe("AsyncState", () => {
       // Assert
       await promise1.catch(() => {});
       await promise2;
-      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: true, errors: [] });
-      expect(statusCallback).toHaveBeenLastCalledWith({ isLoading: false, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(1, { isLoading: false, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(2, { isLoading: true, errors: [] });
+      expect(statusCallback).toHaveBeenNthCalledWith(3, { isLoading: true, errors: [error] });
+      expect(statusCallback).toHaveBeenNthCalledWith(4, { isLoading: false, errors: [] });
     });
   });
 });
