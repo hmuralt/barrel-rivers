@@ -6,13 +6,15 @@ export type SetValueAsync<TValue> = (
   newValue: NewValue<TValue> | Observable<NewValue<TValue>> | Promise<NewValue<TValue>>
 ) => void;
 
-export interface SetStatus {
+export interface LoadStatus {
   isLoading: boolean;
+}
+
+export interface SetStatus extends LoadStatus {
   error?: unknown;
 }
 
-export interface OverallSetStatus {
-  isLoading: boolean;
+export interface OverallSetStatus extends LoadStatus {
   errors: unknown[];
 }
 
@@ -54,7 +56,7 @@ export function asyncLoadableState<TValue>(state: State<TValue>): AsyncLoadableS
   return withValueContainer(state)({ setStatus$: setStatusSubject.asObservable(), overallSetStatus$, set });
 }
 
-export function oneLoadCycle(setStatus$: Observable<SetStatus>) {
+export function oneLoadCycle(setStatus$: Observable<LoadStatus>) {
   return setStatus$.pipe(takeWhile((status) => status.isLoading, true));
 }
 
