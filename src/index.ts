@@ -16,4 +16,4 @@ export {
 export { subState } from "./SubState";
 export { mergedState } from "./MergedState";
 export { default as ValueContainer, withValueContainer } from "./ValueContainer";
-export { default as AsyncLoadableState, SetStatus, OverallSetStatus } from "./AsyncLoadableState";
+export { default as AsyncLoadableState, SetStatus, OverallSetStatus, asyncLoadableState } from "./AsyncLoadableState";

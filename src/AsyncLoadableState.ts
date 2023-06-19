@@ -56,7 +56,7 @@ export function asyncLoadableState<TValue>(state: State<TValue>): AsyncLoadableS
   return withValueContainer(state)({ setStatus$: setStatusSubject.asObservable(), overallSetStatus$, set });
 }
 
-export function oneLoadCycle(setStatus$: Observable<LoadStatus>) {
+export function oneLoadCycle<TStatus extends LoadStatus>(setStatus$: Observable<TStatus>) {
   return setStatus$.pipe(takeWhile((status) => status.isLoading, true));
 }
 
